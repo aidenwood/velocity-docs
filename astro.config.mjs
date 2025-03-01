@@ -22,6 +22,11 @@ export default defineConfig({
 					label: 'Reference',
 					autogenerate: { directory: 'reference' },
 				},
+				{
+					label: 'Components',
+					// Autogenerate a group of links for directory.
+					autogenerate: { directory: 'components' },
+				  },
 			],
 		}),
 	],
