@@ -5,6 +5,7 @@ description: A guide in my new Starlight docs site.
 ---
 
 
+import { Card } from '@astrojs/starlight/components';
 
 <Card title="Stars" icon="star">
   Sirius, Vega, Betelgeuse
