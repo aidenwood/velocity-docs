@@ -1,5 +1,5 @@
 ---
-title: Getting Started with Velocity
+title: Why Choose Velocity
 description: A guide in my new Starlight docs site.
 
 ---
