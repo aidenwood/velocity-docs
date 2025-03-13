@@ -8,7 +8,7 @@ description: Make the theme your own or branded to your client quickly.
 
 It is highly recommended you build a file structure that resembles what you want to create with Velocity for this project early on in your development process. Most of the pages that come out of the box in Velocity will be a big help to copy as a boiler plate to most needs of website page types. Check out the 'Page Boilerplate' Folder for quick start pages of all types and designs.
 
-Velocity was built to help improve the speed of this by giving you reusable page structures you commonly need. Common file structures for standard website types include:
+Velocity comes out-of-the-box with plenty of pre-built pages and components for you to experiment with and quickly reorganise to make websites faster than ever. was built to help improve the speed of this by giving you reusable page structures you commonly need. Common file structures for standard website types include:
 
 ### Service-Based Business
 
