@@ -13,12 +13,16 @@ export default defineConfig({
         },
         sidebar: [
             {
+                label: 'Why Velocity',
+                autogenerate: { directory: 'why-velocity' },
+            },
+            {
                 label: 'Guides',
                 autogenerate: { directory: 'guides' },
             },
             {
-                label: 'Reference',
-                autogenerate: { directory: 'reference' },
+                label: 'Starter Templates',
+                autogenerate: { directory: 'templates' },
             },
             {
                 label: 'Components',
