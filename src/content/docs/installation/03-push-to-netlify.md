@@ -4,7 +4,7 @@ description: Make the theme your own or branded to your client quickly.
 
 ---
 
-## Quickly Restyling the theme
+## Push the
 - Quickly changing the theme for your latest client use or branding.
     - Change the primary and secondary colours.
     - Change the font file used.

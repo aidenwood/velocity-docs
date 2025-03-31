@@ -46,4 +46,10 @@ In the body tag of the layout.astro file, you'll find the area to add your Publi
 show the button code
 ```
 
+:::caution
+If you are not sure you want an awesome docs site, think twice before using [Starlight](/).
+:::
+
+:::caution
+SnipCart will add a $20/month fee to the cost of your project. You may remove SnipCart and use Stripe 
 
