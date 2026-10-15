@@ -1,54 +1,60 @@
-# Starlight Starter Kit: Basics
+# Velocity Docs
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Docs site for [Velocity Components](https://github.com/aidenwood/velocity-components) and the
+[`velocityx` CLI](https://github.com/aidenwood/velocityX-cli). Astro + Tailwind, themed with the
+same Velocity preset shipped to customers.
 
+**Public.** This repo was previously an unused Starlight starter (last touched March 2025) —
+it's now the real docs surface for the component subscription.
+
+## What's here
+
+- `/` — landing page: what Velocity Components is, free vs subscription, SEO entry point.
+- `/docs/getting-started/` — install the CLI, add a component, wire up the theme.
+- `/docs/components/` + `/docs/components/<slug>/` — full reference, **generated at build time
+  from the live registry** (`https://aidxn.com/r`), one page per component.
+- `/docs/cli/` — every `velocityx` command.
+- `/docs/theming/` — the 24 CSS variables that re-theme the whole library.
+
+## One source of truth — no second copy of the manifest
+
+Component pages are **not** built from a copy of `free-components.json` pasted into this repo.
+`src/lib/registry.ts` fetches `https://aidxn.com/r/index.json` and `https://aidxn.com/r/<slug>.json`
+at build time — the same endpoint the CLI and the components showcase site read. Free components
+arrive with real file content inline (so the "Source" section on a free component's page is
+always the current, genuine file); paid components come back `files: []` / `requiresLicense: true`
+with no authentication ever attempted here, so there is no code path in this repo that can hold
+paid source in memory. Rebuilding this site always picks up the latest registry state — there is
+nothing here to fall out of sync.
+
+The theme files (`theme/velocity-preset.cjs`, `theme/velocity-theme.css`) are vendored the same
+way, via `npm run sync:theme` — pulled from the live registry's `theme.json`, not hand-copied.
+Re-run it if the upstream theme contract changes.
+
+## Dev
+
+```bash
+npm install
+npm run sync:theme   # refresh theme/ from the live registry (occasional, not on every build)
+npm run dev
+npm run build         # writes dist/, generates sitemap-index.xml
+npm run preview
 ```
-npm create astro@latest -- --template starlight
+
+## Netlify
+
+`netlify.toml` builds with `npm run build` → publishes `dist/`. Site: `docs.aidxn.com`.
+
+## Verifying the leak boundary
+
+After any change to `src/pages/docs/components/`, confirm the split still holds in the build
+output:
+
+```bash
+npm run build
+grep -rl "Pulled live from the registry" dist/docs/components/*/index.html | wc -l   # expect 40 (free)
+grep -rl "subscription gates" dist/docs/components/*/index.html | wc -l               # expect 180 (paid)
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/starlight/tree/main/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/starlight/tree/main/examples/basics)
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/withastro/starlight&create_from_path=examples/basics)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fwithastro%2Fstarlight%2Ftree%2Fmain%2Fexamples%2Fbasics&project-name=my-starlight-docs&repository-name=my-starlight-docs)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   ├── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
-```
-
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
-
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
-
-Static assets, like favicons, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+If those two numbers don't match the registry's free/paid split, something in
+`src/pages/docs/components/[slug]/index.astro` is leaking — stop and fix it before deploying.

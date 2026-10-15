@@ -1,0 +1,99 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   VELOCITY THEME — import this once, then never think about it again.
+
+       @import './velocity-theme/velocity-theme.css';
+
+   ───────────────────────────────────────────────────────────────────────────
+   ⚡ NOT USING VELOCITY? THIS IS THE ONLY BLOCK YOU NEED TO TOUCH.
+
+   Set ONE variable to opt out of the Velocity brand entirely:
+
+       :root { --vx-brand: custom; }
+
+   …then override the stops below with your own. Everything in the library —
+   buttons, cards, forms, carousels, every component — re-themes from these
+   24 variables. You do not need to edit a single component file, and you do
+   not inherit Aidxn's purple unless you want it.
+
+   The defaults here are a NEUTRAL SLATE/INDIGO on purpose. They are not the
+   Aidxn brand. Velocity's own site overrides them with its purple ramp, which
+   is exactly the swap you would do for your own brand.
+   ───────────────────────────────────────────────────────────────────────────
+
+   ⚠️ FORMAT RULE — raw RGB channels, space separated. No `#`, no `rgb()`.
+      Right:  --vx-primary-600: 79 70 229;
+      Wrong:  --vx-primary-600: #4F46E5;        ← breaks every /opacity variant
+      Wrong:  --vx-primary-600: rgb(79 70 229); ← same
+
+      Tailwind composes these as `rgb(var(--vx-primary-600) / 0.2)` so that
+      `bg-primary-600/20` works. A hex here fails silently: no console error,
+      the colour just renders wrong or not at all.
+
+      Convert a hex with any picker, or: #4F46E5 → 79 70 229.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Brand ramp. Your primary action/accent colour. ────────────────────── */
+  --vx-primary-50: 238 242 255;
+  --vx-primary-100: 224 231 255;
+  --vx-primary-200: 199 210 254;
+  --vx-primary-300: 165 180 252;
+  --vx-primary-400: 129 140 248;
+  --vx-primary-500: 99 102 241;
+  --vx-primary-600: 79 70 229; /* ← primary buttons, links, focus rings */
+  --vx-primary-700: 67 56 202;
+  --vx-primary-800: 55 48 163;
+  --vx-primary-900: 49 46 129;
+  --vx-primary-950: 30 27 75;
+
+  /* ── Accent ramp. Use sparingly — 2–3 touches per page at most. ────────── */
+  --vx-accent-50: 255 247 237;
+  --vx-accent-100: 255 237 213;
+  --vx-accent-200: 254 215 170;
+  --vx-accent-300: 253 186 116;
+  --vx-accent-400: 251 146 60;
+  --vx-accent-500: 249 115 22;
+  --vx-accent-600: 234 88 12;
+  --vx-accent-700: 194 65 12;
+  --vx-accent-800: 154 52 18;
+  --vx-accent-900: 124 45 18;
+  --vx-accent-950: 67 20 7;
+
+  /* ── Semantic surfaces. Light mode. ────────────────────────────────────── */
+  --vx-surface: 255 255 255;
+  --vx-surface-raised: 248 250 252;
+  --vx-ink: 15 23 42;
+  --vx-ink-muted: 100 116 139;
+  --vx-hairline: 226 232 240;
+
+  /* ── Shape + type. Inherit by default so we never fight your design system. */
+  --vx-radius: 0.75rem;
+  --vx-radius-lg: 1rem;
+  --vx-font: inherit;
+}
+
+/* Dark mode. Velocity toggles `.dark` on <html>; if your project uses a
+   different strategy, re-declare this block under your own selector. */
+.dark {
+  --vx-surface: 2 6 23;
+  --vx-surface-raised: 15 23 42;
+  --vx-ink: 248 250 252;
+  --vx-ink-muted: 148 163 184;
+  --vx-hairline: 30 41 59;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   EXAMPLE — your brand in about thirty seconds.
+   Uncomment, paste your own channels, done. Every component follows.
+
+   :root {
+     --vx-brand: custom;
+     --vx-primary-600: 220 38 38;   // #DC2626
+     --vx-primary-700: 185 28 28;   // #B91C1C
+     --vx-primary-300: 252 165 165; // #FCA5A5 — dark-mode text/borders
+     --vx-radius: 0.25rem;          // sharper corners everywhere
+   }
+
+   You only need the stops you actually use. 600 and 700 cover most of it;
+   add 300 if you ship dark mode.
+   ─────────────────────────────────────────────────────────────────────────── */

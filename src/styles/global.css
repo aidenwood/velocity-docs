@@ -1,0 +1,27 @@
+@import '../../theme/velocity-theme.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Shared prose rhythm for hand-written guide copy — not a plugin, just the
+     spacing/typography rules this site actually needs, kept in one place. */
+  .vx-prose :where(h2) {
+    @apply mt-10 text-xl font-semibold tracking-tight text-ink;
+  }
+  .vx-prose :where(h3) {
+    @apply mt-8 text-lg font-semibold tracking-tight text-ink;
+  }
+  .vx-prose :where(p) {
+    @apply mt-4 leading-relaxed text-ink-muted;
+  }
+  .vx-prose :where(ul) {
+    @apply mt-4 list-disc space-y-2 pl-5 text-ink-muted;
+  }
+  .vx-prose :where(a) {
+    @apply text-primary-400 underline-offset-2 hover:underline;
+  }
+  .vx-prose :where(code):not(pre code) {
+    @apply rounded bg-primary-500/10 px-1.5 py-0.5 text-sm text-primary-300;
+  }
+}

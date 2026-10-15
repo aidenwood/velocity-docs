@@ -1,0 +1,78 @@
+---
+/**
+ * /docs/components/ — the full reference index, generated at build time from
+ * the live registry. Metadata only, same leak boundary as the showcase site:
+ * paid component SOURCE never reaches a page in this repo.
+ */
+import Base from '../../../layouts/Base.astro';
+import { fetchIndex, byCategory, categorySlug } from '../../../lib/registry';
+
+const index = await fetchIndex();
+const categories = byCategory(index.components);
+const { free, subscription, total } = index.counts;
+
+const title = `Component reference — all ${total} components`;
+const description = `Every Velocity X component by category, with install command, framework, licence and demo link. ${free} free and MIT licensed, ${subscription} on subscription.`;
+---
+
+<Base title={title} description={description}>
+  <section class="mx-auto max-w-6xl px-6 pt-16 pb-10">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary-400">Component reference</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight">All {total} components</h1>
+    <p class="mt-3 max-w-2xl text-ink-muted">
+      {free} free and MIT licensed, {subscription} on the subscription. Install any of them with{' '}
+      <code class="rounded bg-primary-500/10 px-1.5 py-0.5 text-sm text-primary-300">velocityx add &lt;slug&gt;</code>,
+      or click through for usage and (for free components) the real source.
+    </p>
+  </section>
+
+  <nav class="mx-auto mb-10 max-w-6xl px-6">
+    <div class="flex flex-wrap gap-2 text-xs">
+      {categories.map((c) => (
+        <a
+          href={`#${categorySlug(c.name)}`}
+          class="rounded-full border border-hairline px-3 py-1 text-ink-muted no-underline hover:border-primary-500/50 hover:text-ink"
+        >
+          {c.name} ({c.items.length})
+        </a>
+      ))}
+    </div>
+  </nav>
+
+  {categories.map((c) => (
+    <section id={categorySlug(c.name)} class="mx-auto max-w-6xl scroll-mt-20 px-6 pb-12">
+      <div class="flex flex-wrap items-baseline justify-between gap-2 border-b border-hairline pb-3">
+        <h2 class="text-xl font-semibold">{c.name}</h2>
+        <span class="text-xs text-ink-muted">
+          {`${c.items.length} · ${c.free} free · ${c.paid} paid`}
+        </span>
+      </div>
+      <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {c.items.map((item) => (
+          <a
+            href={`/docs/components/${item.slug}/`}
+            class="group relative rounded-2xl border border-hairline p-5 no-underline transition hover:border-primary-500/50"
+          >
+            <span
+              class:list={[
+                'absolute right-4 top-4 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide',
+                item.access === 'free' ? 'bg-green-500/15 text-green-400' : 'bg-primary-500/15 text-primary-300',
+              ]}
+            >
+              {item.access === 'free' ? 'Free' : 'Sub'}
+            </span>
+            <h3 class="pr-14 font-semibold leading-snug text-ink group-hover:text-primary-300">{item.name}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-muted">{item.description}</p>
+            <div class="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-ink-muted">
+              <code class="rounded bg-primary-500/10 px-1.5 py-0.5 text-primary-300">
+                velocityx add {item.slug}
+              </code>
+              <span>{item.framework}</span>
+              {item.version && <span>v{item.version}</span>}
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+</Base>

@@ -1,0 +1,128 @@
+---
+/**
+ * /docs/components/<slug>/ — one page per component, generated at build time.
+ *
+ * LEAK BOUNDARY: `fetchComponent` never sends a licence key, so a paid slug
+ * always comes back with `files: []` / `requiresLicense: true` — there is no
+ * code path on this page that can ever hold paid source in memory, let alone
+ * render it. Free components arrive with real file content inline, straight
+ * from the live registry, so the usage sample below is always the genuine
+ * current source — never a second, driftable copy.
+ */
+import Base from '../../../../layouts/Base.astro';
+import { fetchIndex, fetchComponent } from '../../../../lib/registry';
+
+export async function getStaticPaths() {
+  const index = await fetchIndex();
+  return index.components.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const component = await fetchComponent(slug as string);
+const isFree = component.access === 'free';
+
+const title = `${component.name} — Velocity Components`;
+const description = `${component.description} ${isFree ? 'Free, MIT licensed.' : 'On the Velocity Components subscription.'} Install with velocityx add ${component.slug}.`;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name: component.name,
+  description: component.description,
+  programmingLanguage: component.framework === 'react' ? 'TypeScript' : 'Astro',
+  codeRepository: 'https://github.com/aidenwood/velocity-components',
+  license: isFree ? 'https://opensource.org/licenses/MIT' : undefined,
+};
+---
+
+<Base title={title} description={description} structuredData={structuredData}>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-20">
+    <a href="/docs/components/" class="text-sm text-ink-muted no-underline hover:text-ink">← All components</a>
+
+    <div class="mt-4 flex flex-wrap items-center gap-3">
+      <h1 class="text-3xl font-bold tracking-tight">{component.name}</h1>
+      <span
+        class:list={[
+          'rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide',
+          isFree ? 'bg-green-500/15 text-green-400' : 'bg-primary-500/15 text-primary-300',
+        ]}
+      >
+        {isFree ? 'Free · MIT' : 'Subscription'}
+      </span>
+    </div>
+    <p class="mt-3 text-ink-muted">{component.description}</p>
+
+    <dl class="mt-6 grid grid-cols-2 gap-4 rounded-2xl border border-hairline p-5 text-sm sm:grid-cols-4">
+      <div>
+        <dt class="text-xs uppercase tracking-wide text-ink-muted">Category</dt>
+        <dd class="mt-1 font-medium">{component.category}</dd>
+      </div>
+      <div>
+        <dt class="text-xs uppercase tracking-wide text-ink-muted">Framework</dt>
+        <dd class="mt-1 font-medium capitalize">{component.framework}</dd>
+      </div>
+      <div>
+        <dt class="text-xs uppercase tracking-wide text-ink-muted">Version</dt>
+        <dd class="mt-1 font-medium">{component.version ?? '1.0.0'}</dd>
+      </div>
+      <div>
+        <dt class="text-xs uppercase tracking-wide text-ink-muted">Peer deps</dt>
+        <dd class="mt-1 font-medium">{component.peerDeps?.length ? component.peerDeps.join(', ') : 'none'}</dd>
+      </div>
+    </dl>
+
+    <div class="vx-prose mt-8">
+      <h2>Install</h2>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>velocityx add {component.slug}</code></pre>
+      {!isFree && (
+        <p>
+          This component is on the Velocity Components subscription. Run{' '}
+          <code>velocityx login &lt;your-key&gt;</code> first —{' '}
+          <a href={component.licenseUrl ?? 'https://aidxn.com/shop/velocity-x-component-library/'}>subscribe here</a>{' '}
+          if you haven't. The licence key is in your receipt email.
+        </p>
+      )}
+      {isFree && (
+        <p>
+          Free and MIT licensed — no account needed. The file lands under{' '}
+          <code>src/components/velocity/{component.slug}/</code> by default (override with{' '}
+          <code>--dest</code>), and it's yours to edit from the moment it's written.
+        </p>
+      )}
+
+      <h2>Demo</h2>
+      <p><a href={component.demoUrl} target="_blank" rel="noreferrer">View the live demo on the showcase site ↗</a></p>
+
+      {isFree && component.files?.length ? (
+        <>
+          <h2>Source</h2>
+          <p>
+            Pulled live from the registry — this is the exact file{' '}
+            <code>velocityx add {component.slug}</code> writes into your project right now.
+          </p>
+          {component.files.map((file) => (
+            <>
+              <p class="mt-6 font-mono text-xs text-ink-muted">{file.to}</p>
+              <pre class="mt-2 max-h-[36rem] overflow-y-auto overflow-x-auto rounded-xl bg-ink/5 p-4 text-xs leading-relaxed dark:bg-black/40"><code>{file.content}</code></pre>
+            </>
+          ))}
+        </>
+      ) : (
+        <>
+          <h2>Source</h2>
+          <p>
+            Component source isn't shown here for subscription components — that's the one thing
+            the subscription gates. Install it with the CLI after logging in, or preview the
+            rendered result on the <a href={component.demoUrl}>live demo</a>.
+          </p>
+        </>
+      )}
+
+      <h2>Theming</h2>
+      <p>
+        Uses the shared <code>primary-*</code> / <code>accent-*</code> scale — see{' '}
+        <a href="/docs/theming/">Theming</a> if colours look unstyled after install.
+      </p>
+    </div>
+  </section>
+</Base>

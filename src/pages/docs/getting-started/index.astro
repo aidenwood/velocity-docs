@@ -1,0 +1,88 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { fetchIndex } from '../../../lib/registry';
+
+const index = await fetchIndex();
+const title = 'Getting started — Velocity Docs';
+const description = 'Install the velocityx CLI, add your first free component, wire up the Velocity theme preset. Three commands, no account required for the free tier.';
+---
+
+<Base title={title} description={description}>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-20">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary-400">Getting started</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight">From zero to your first component</h1>
+    <p class="mt-4 text-ink-muted">
+      Velocity Components ships shadcn-style: a CLI fetches source from a live registry and
+      writes it straight into your project. You own the file from the moment it lands — no
+      package to upgrade, no import from <code>node_modules</code>, nothing to break on a major
+      version bump upstream.
+    </p>
+
+    <div class="vx-prose mt-6">
+      <h2>1. Install the CLI</h2>
+      <p>
+        The CLI isn't on the public npm registry yet — pull it straight from source while that's
+        in progress:
+      </p>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`git clone https://github.com/aidenwood/velocityX-cli.git
+cd velocityX-cli
+npm install
+npm run build
+npm link   # exposes \`velocityx\` globally on your machine`}</code></pre>
+      <p>
+        Once <code>@aidxn/velocityx-cli</code> is published, this collapses to one line:
+        <code>npm install -g @aidxn/velocityx-cli</code>. See the open item at the bottom of
+        this page.
+      </p>
+
+      <h2>2. Install the theme (once per project)</h2>
+      <p>
+        Every component is written against a <code>primary-*</code> / <code>accent-*</code> Tailwind
+        scale. Without the preset, a component installs fine and renders with{' '}
+        <strong>no colour at all</strong> — so do this first:
+      </p>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>velocityx theme</code></pre>
+      <p>Then two one-line edits the command prints out for you:</p>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`// tailwind.config.js
+module.exports = {
+  presets: [require('./velocity-theme/velocity-preset.cjs')],
+  content: ['./src/**/*.{astro,html,js,jsx,ts,tsx,vue,svelte}'],
+};`}</code></pre>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`/* your global stylesheet */
+@import './velocity-theme/velocity-theme.css';`}</code></pre>
+      <p>
+        Full variable list and how re-theming works: <a href="/docs/theming/">Theming →</a>
+      </p>
+
+      <h2>3. Browse and add a component</h2>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`velocityx list                 # everything, grouped by category
+velocityx search carousel      # find by name, category or description
+velocityx add flow-lines       # writes the source into your project`}</code></pre>
+      <p>
+        <code>add</code> never overwrites a file you've already touched — re-run with{' '}
+        <code>--force</code> if you really mean to. By default files land under{' '}
+        <code>src/</code>; pass <code>--dest</code> to change that.
+      </p>
+
+      <h2>4. Unlock the subscription (optional)</h2>
+      <p>
+        {index.counts.free} components are free forever. The other {index.counts.subscription} need
+        a licence key from the <a href={index.subscription.url}>Velocity Components subscription</a>{' '}
+        ({index.subscription.currency} ${index.subscription.price}/{index.subscription.interval}) —
+        it's in your receipt email.
+      </p>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>velocityx login vx_live_xxxxxxxxxxxx</code></pre>
+      <p>
+        After that, <code>velocityx add</code> on a paid slug works exactly the same way — same
+        command, same ownership, no feature flags in the file.
+      </p>
+
+      <h2>Full reference</h2>
+      <ul>
+        <li><a href="/docs/cli/">CLI reference</a> — every command and flag</li>
+        <li><a href="/docs/components/">Component reference</a> — all {index.counts.total}, browsable by category</li>
+        <li><a href="/docs/theming/">Theming</a> — the 24 variables that re-theme everything</li>
+      </ul>
+    </div>
+  </section>
+</Base>

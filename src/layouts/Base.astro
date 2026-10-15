@@ -1,0 +1,118 @@
+---
+/**
+ * Base layout for the docs site. Same visual system as components.aidxn.com —
+ * same dark theme, same preset, same 24 CSS variables — because this is one
+ * product with two surfaces, not a second design language.
+ */
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  structuredData?: Record<string, unknown>;
+}
+
+const { title, description, ogImage, structuredData } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const fullTitle = title.includes('Velocity') ? title : `${title} — Velocity Docs`;
+
+const nav = [
+  { href: '/docs/getting-started/', label: 'Getting Started' },
+  { href: '/docs/components/', label: 'Components' },
+  { href: '/docs/cli/', label: 'CLI' },
+  { href: '/docs/theming/', label: 'Theming' },
+];
+---
+
+<!doctype html>
+<html lang="en-AU" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+
+    {structuredData && (
+      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    )}
+  </head>
+  <body class="min-h-screen bg-surface text-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary-600 focus:px-4 focus:py-2 focus:text-white"
+    >
+      Skip to content
+    </a>
+
+    <header class="sticky top-0 z-40 border-b border-hairline bg-surface/90 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+        <a href="/" class="font-semibold tracking-tight no-underline text-ink">
+          Velocity <span class="text-primary-500">X</span>
+          <span class="text-ink-muted">Docs</span>
+        </a>
+        <nav class="hidden items-center gap-5 text-sm sm:flex">
+          {nav.map((item) => (
+            <a
+              href={item.href}
+              class="text-ink-muted no-underline hover:text-ink aria-[current=page]:text-ink aria-[current=page]:font-semibold"
+              aria-current={Astro.url.pathname.startsWith(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        <div class="flex items-center gap-3">
+          <a
+            href="https://aidxn.com/components/"
+            class="hidden text-sm text-ink-muted no-underline hover:text-ink md:inline"
+          >
+            Showcase ↗
+          </a>
+          <a
+            href="https://aidxn.com/shop/velocity-x-component-library/"
+            class="rounded-lg bg-primary-600 px-3.5 py-1.5 text-sm font-semibold text-white no-underline hover:bg-primary-500"
+          >
+            Subscribe
+          </a>
+        </div>
+      </div>
+      <nav class="flex gap-4 overflow-x-auto border-t border-hairline px-6 py-2 text-sm sm:hidden">
+        {nav.map((item) => (
+          <a href={item.href} class="whitespace-nowrap text-ink-muted no-underline hover:text-ink">
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="mt-20 border-t border-hairline">
+      <div class="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-sm text-ink-muted sm:flex-row sm:items-center sm:justify-between">
+        <p>
+          Built by <a href="https://aidxn.com" class="text-primary-400 no-underline hover:underline">Aidxn Design</a>.
+          Free components are MIT licensed.
+        </p>
+        <p class="flex gap-4">
+          <a href="https://aidxn.com/components/" class="no-underline hover:text-ink">Showcase</a>
+          <a href="https://github.com/aidenwood/velocity-components" class="no-underline hover:text-ink">GitHub</a>
+          <a href="https://github.com/aidenwood/velocityX-cli" class="no-underline hover:text-ink">CLI source</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

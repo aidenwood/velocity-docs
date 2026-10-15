@@ -1,0 +1,71 @@
+---
+import Base from '../../../layouts/Base.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Read straight from the vendored theme CSS (kept in sync with the live
+// registry by `npm run sync:theme`), so these docs can never drift from the
+// variables a real `velocityx theme` install writes.
+const css = fs.readFileSync(path.join(process.cwd(), 'theme/velocity-theme.css'), 'utf8');
+
+const title = 'Theming — Velocity Docs';
+const description = 'The 24 CSS variables that re-theme every Velocity component. Raw RGB channels, light and dark mode, and the one-line opt-out.';
+---
+
+<Base title={title} description={description}>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-20">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary-400">Theming</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight">Re-theme the whole library from 24 variables</h1>
+    <p class="mt-4 text-ink-muted">
+      Every component is written against a <code>primary-*</code> / <code>accent-*</code> Tailwind
+      scale that resolves through CSS custom properties. Override the variables once, in your
+      global stylesheet, and every component — buttons, cards, forms, carousels — follows. You
+      never edit a component file to change colour.
+    </p>
+
+    <div class="vx-prose mt-6">
+      <h2>Install the preset</h2>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>velocityx theme</code></pre>
+      <p>That writes two files and prints the two lines you need to add — a Tailwind preset and a CSS import. See <a href="/docs/getting-started/">Getting started</a> for the exact snippet.</p>
+
+      <h2>⚠ The alpha-channel rule</h2>
+      <p>
+        Variables hold <strong>raw, space-separated RGB channels</strong> — <code>187 51 255</code> —
+        never a hex and never <code>rgb(...)</code>. That is what lets Tailwind's slash-opacity
+        syntax work: <code>bg-primary-600/20</code> compiles to{' '}
+        <code>rgb(var(--vx-primary-600) / 0.2)</code>. Put a hex in the variable and every opacity
+        variant in the library fails <strong>silently</strong> — no console error, the colour
+        just renders wrong or not at all.
+      </p>
+      <p>Convert any hex: <code>#4F46E5</code> → <code>79 70 229</code>.</p>
+
+      <h2>Your brand in about thirty seconds</h2>
+      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`:root {
+  --vx-brand: custom;
+  --vx-primary-600: 220 38 38;   /* #DC2626 */
+  --vx-primary-700: 185 28 28;   /* #B91C1C */
+  --vx-primary-300: 252 165 165; /* #FCA5A5 — dark-mode text/borders */
+  --vx-radius: 0.25rem;          /* sharper corners everywhere */
+}`}</code></pre>
+      <p>You only need the stops you actually use — 600 and 700 cover most of it; add 300 if you ship dark mode.</p>
+
+      <h2>Dark mode</h2>
+      <p>
+        Velocity toggles dark mode by adding <code>.dark</code> to <code>&lt;html&gt;</code>. If your
+        project uses a different strategy (a data attribute, a different class), re-declare the
+        dark block under your own selector.
+      </p>
+
+      <h2>Never a component-level font-family</h2>
+      <p>
+        Components deliberately never set their own font. The <code>font-vx</code> utility
+        resolves to <code>var(--vx-font, inherit)</code> — your project's own font cascade always
+        wins, so Velocity components never fight an existing design system.
+      </p>
+
+      <h2>The full file</h2>
+      <p>This is the exact <code>velocity-theme.css</code> a real install writes, kept in sync with the live registry:</p>
+      <pre class="mt-4 max-h-[32rem] overflow-y-auto overflow-x-auto rounded-xl bg-ink/5 p-4 text-xs leading-relaxed dark:bg-black/40"><code>{css}</code></pre>
+    </div>
+  </section>
+</Base>

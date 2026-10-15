@@ -1,20 +1,19 @@
 {
-  "name": "@example/starlight-basics",
-  "type": "module",
-  "version": "0.0.1",
+  "name": "@aidxn/velocity-docs",
+  "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "description": "Docs for Velocity Components + the velocityx CLI — built from the live registry, never a second copy of the manifest.",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "sync:theme": "node scripts/sync-theme.mjs"
   },
   "dependencies": {
-    "@astrojs/markdoc": "^0.12.10",
-    "@astrojs/starlight": "^0.32.2",
-    "@astrojs/starlight-markdoc": "^0.2.0",
-    "astro": "^5.1.5",
-    "sharp": "^0.32.5"
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^5.1.5",
+    "astro": "^5.18.1",
+    "tailwindcss": "3.3.3"
   }
 }

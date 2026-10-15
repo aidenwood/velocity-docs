@@ -1,0 +1,94 @@
+---
+import Base from '../../../layouts/Base.astro';
+
+const title = 'CLI reference — velocityx';
+const description = 'Every velocityx command: add, list, search, theme, login and logout. Flags, defaults and examples for each.';
+
+const commands = [
+  {
+    cmd: 'velocityx add [components...]',
+    summary: 'Add one or more components into your project. Omit the slug to browse interactively.',
+    flags: [
+      ['--dest <dir>', 'Project source root the files are written under (default src)'],
+      ['--force', 'Overwrite files that already exist'],
+    ],
+    example: 'velocityx add flow-lines expandable-card',
+    notes:
+      'Writes real source files, never a package import. Skips any file you have already edited unless you pass --force. Warns (once, only when it actually wrote files) if your Tailwind config has no `primary` scale.',
+  },
+  {
+    cmd: 'velocityx list',
+    summary: 'Every component — free and subscription — grouped by category.',
+    flags: [
+      ['--free', 'Only the free, MIT-licensed components'],
+      ['--category <name>', 'Filter by category, e.g. "forms"'],
+    ],
+    example: 'velocityx list --category forms',
+    notes:
+      'Paid components are listed alongside free ones deliberately — you can see the whole catalogue before paying for it.',
+  },
+  {
+    cmd: 'velocityx search [query...]',
+    summary: 'Find a component by name, category or description without scrolling the full list.',
+    flags: [['--limit <n>', 'Maximum results to show (default 20)']],
+    example: 'velocityx search pricing table',
+    notes: 'Matches name > category > description. Every term in the query must match something (AND, not OR).',
+  },
+  {
+    cmd: 'velocityx theme',
+    summary: 'Install the Velocity Tailwind preset + CSS variables. Run once per project.',
+    flags: [
+      ['--dest <dir>', 'Where to write the theme files (default velocity-theme)'],
+      ['--force', 'Overwrite an existing theme file — you have probably edited it'],
+    ],
+    example: 'velocityx theme',
+    notes: 'Free and unauthenticated regardless of subscription state — without it, every component renders with no colour.',
+  },
+  {
+    cmd: 'velocityx login [key]',
+    summary: 'Save your Velocity Components subscription licence key on this machine.',
+    flags: [],
+    example: 'velocityx login vx_live_xxxxxxxxxxxx',
+    notes: 'The key is in your receipt email after subscribing. Stored at ~/.velocityx/credentials.json, mode 0600.',
+  },
+  {
+    cmd: 'velocityx logout',
+    summary: 'Remove the stored licence key from this machine.',
+    flags: [],
+    example: 'velocityx logout',
+    notes: '',
+  },
+];
+---
+
+<Base title={title} description={description}>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-20">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary-400">CLI reference</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight">velocityx</h1>
+    <p class="mt-4 text-ink-muted">
+      Every command the Velocity Components CLI exposes for installing and theming the library.
+      New to it? Start with <a href="/docs/getting-started/" class="text-primary-400 hover:underline">Getting started</a>.
+    </p>
+
+    <div class="mt-10 space-y-10">
+      {commands.map((c) => (
+        <div class="border-t border-hairline pt-8">
+          <h2 class="font-mono text-lg font-semibold text-ink">{c.cmd}</h2>
+          <p class="mt-2 text-ink-muted">{c.summary}</p>
+          {c.flags.length > 0 && (
+            <dl class="mt-4 space-y-2 text-sm">
+              {c.flags.map(([flag, desc]) => (
+                <div class="flex flex-col gap-0.5 sm:flex-row sm:gap-3">
+                  <dt class="shrink-0 font-mono text-primary-300">{flag}</dt>
+                  <dd class="text-ink-muted">{desc}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+          <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>$ {c.example}</code></pre>
+          {c.notes && <p class="mt-3 text-sm text-ink-muted">{c.notes}</p>}
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>

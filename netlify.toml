@@ -1,0 +1,19 @@
+# Docs site for Velocity Components. Explicit build config so Netlify never
+# repeats the "Detected 0 framework(s) / No build steps found" failure that
+# hit this same repo name previously — this time there is a real Astro app.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/components"
+  to = "/docs/components/"
+  status = 301
+
+[[redirects]]
+  from = "/cli"
+  to = "/docs/cli/"
+  status = 301

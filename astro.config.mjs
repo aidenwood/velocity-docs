@@ -1,34 +1,16 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
-import starlight from '@astrojs/starlight';
+import tailwind from '@astrojs/tailwind';
+import sitemap from '@astrojs/sitemap';
 
-import markdoc from '@astrojs/markdoc';
-
-// https://astro.build/config
+// The docs site for Velocity Components + the velocityx CLI. Every component
+// reference page is generated at build time from the live registry
+// (https://aidxn.com/r) — never from a copy of free-components.json pasted
+// into this repo. One source of truth, read over the network, not forked.
 export default defineConfig({
-    integrations: [starlight({
-        title: 'Velocity Docs',
-        social: {
-            github: 'https://github.com/aidenwood',
-        },
-        sidebar: [
-            {
-                label: 'Why Velocity',
-                autogenerate: { directory: 'why-velocity' },
-            },
-            {
-                label: 'Guides',
-                autogenerate: { directory: 'guides' },
-            },
-            {
-                label: 'Starter Templates',
-                autogenerate: { directory: 'templates' },
-            },
-            {
-                label: 'Components',
-                // Autogenerate a group of links for directory.
-                autogenerate: { directory: 'components' },
-              },
-        ],
-		}), markdoc()],
+  site: 'https://docs.aidxn.com',
+  trailingSlash: 'always',
+  integrations: [
+    tailwind({ applyBaseStyles: false }),
+    sitemap(),
+  ],
 });

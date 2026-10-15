@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import { fetchIndex, byCategory } from '../lib/registry';
+
+const index = await fetchIndex();
+const categories = byCategory(index.components);
+const { free, subscription, total } = index.counts;
+
+const title = `Velocity Components Docs — ${total} components, ${free} free`;
+const description = `Install, theme and reference every Velocity X component — ${free} free MIT components and ${subscription} on the ${index.subscription.currency} $${index.subscription.price}/${index.subscription.interval} subscription. Astro, React and Tailwind, zero runtime dependency.`;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Velocity Components',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  description,
+  offers: {
+    '@type': 'Offer',
+    price: index.subscription.price,
+    priceCurrency: index.subscription.currency,
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      price: index.subscription.price,
+      priceCurrency: index.subscription.currency,
+      billingIncrement: 1,
+      unitText: index.subscription.interval,
+    },
+  },
+  url: 'https://docs.aidxn.com',
+};
+---
+
+<Base title={title} description={description} structuredData={structuredData}>
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-14">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary-400">
+      Astro · React · Tailwind
+    </p>
+    <h1 class="mt-3 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+      Docs for Velocity Components &amp; the <span class="text-primary-400">velocityx</span> CLI
+    </h1>
+    <p class="mt-5 max-w-2xl text-lg text-ink-muted">
+      {total} components, installed shadcn-style: the CLI writes real source into your repo and
+      gets out of the way. No runtime dependency, no lock-in. {free} are free and MIT licensed —
+      the rest are on the {index.subscription.currency} ${index.subscription.price}/{index.subscription.interval} subscription.
+    </p>
+
+    <div class="mt-8 inline-flex flex-col gap-1 rounded-xl bg-ink/5 px-4 py-3 font-mono text-sm dark:bg-black/40">
+      <span><span class="select-none text-ink-muted">$ </span>velocityx add flow-lines</span>
+      <span><span class="select-none text-ink-muted">$ </span>velocityx theme</span>
+    </div>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a
+        href="/docs/getting-started/"
+        class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white no-underline hover:bg-primary-500"
+      >
+        Get started →
+      </a>
+      <a
+        href="/docs/components/"
+        class="rounded-lg border border-hairline px-4 py-2 text-sm font-semibold text-ink no-underline hover:border-primary-500/50"
+      >
+        Browse all {total} components
+      </a>
+    </div>
+
+    <div class="mt-8 flex flex-wrap gap-2.5 text-sm font-semibold">
+      <span class="rounded-full bg-green-500/10 px-3.5 py-1.5 text-green-400">{free} free &amp; MIT</span>
+      <span class="rounded-full bg-primary-500/10 px-3.5 py-1.5 text-primary-300">{subscription} on subscription</span>
+      <span class="rounded-full bg-primary-500/10 px-3.5 py-1.5 text-primary-300">{categories.length} categories</span>
+      <span class="rounded-full bg-primary-500/10 px-3.5 py-1.5 text-primary-300">registry {index.version}</span>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pb-14">
+    <h2 class="text-xl font-semibold">Start here</h2>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {[
+        { href: '/docs/getting-started/', title: 'Getting started', body: 'Install the CLI, add your first component, wire up the theme.' },
+        { href: '/docs/components/', title: 'Component reference', body: `Every ${total} components, grouped by category, with install commands and demos.` },
+        { href: '/docs/cli/', title: 'CLI reference', body: 'Every velocityx command — add, list, search, theme, login.' },
+        { href: '/docs/theming/', title: 'Theming', body: 'The 24 CSS variables that re-theme the whole library.' },
+      ].map((card) => (
+        <a
+          href={card.href}
+          class="group rounded-2xl border border-hairline p-5 no-underline transition hover:border-primary-500/50"
+        >
+          <h3 class="font-semibold text-ink group-hover:text-primary-300">{card.title}</h3>
+          <p class="mt-2 text-sm text-ink-muted">{card.body}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pb-20">
+    <div class="rounded-2xl border border-hairline bg-ink/5 p-6 dark:bg-black/30 sm:p-8">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 class="text-lg font-semibold">Free vs subscription</h2>
+          <p class="mt-2 max-w-xl text-sm text-ink-muted">
+            {free} components are free, MIT licensed and yours forever —
+            <code class="rounded bg-primary-500/10 px-1.5 py-0.5 text-primary-300">velocityx add</code> works
+            on them with no account. The other {subscription} unlock with the Velocity Components
+            subscription: {index.subscription.currency} ${index.subscription.price}/{index.subscription.interval}, cancel anytime.
+          </p>
+        </div>
+        <a
+          href={index.subscription.url}
+          class="shrink-0 rounded-lg bg-primary-600 px-5 py-2.5 text-center text-sm font-semibold text-white no-underline hover:bg-primary-500"
+        >
+          Subscribe — {index.subscription.currency} ${index.subscription.price}/{index.subscription.interval}
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
