@@ -1,0 +1,169 @@
+---
+/**
+ * VelocityHeader — the standard Aidxn header, shared by components.aidxn.com
+ * and docs.aidxn.com. Same lockup, same nav shape, same sticky behaviour as
+ * aidxn.com's live header (`velocity-x-stock/src/components/layout/
+ * Header-Minimal.astro` — READ-ONLY reference, never imported, copied by
+ * hand into this repo and adapted):
+ *
+ *   - logo + wordmark, left
+ *   - short nav, centred-left
+ *   - the aidxn login/account affordance (AuthCorner), right
+ *   - one CTA pill, right
+ *   - sticky top-0, hairline border, blurred surface background
+ *
+ * Deliberate simplification vs the aidxn.com reference: THIS header does not
+ * do the scroll-triggered "shrink + float into a pill" animation
+ * Header-Minimal has on desktop. That animation makes the header's own
+ * height/position non-constant, which breaks the fixed-offset math
+ * AppSubheader.astro relies on to stick directly underneath without
+ * overlapping. A full-width, constant-height sticky bar keeps two bars
+ * stacking correctly at every breakpoint — the trade a second, app-only bar
+ * forces. Logo, nav, blur and hairline border carry the "same header" read
+ * without it.
+ *
+ * Fonts/colours are NOT set here — `aidxn-site-brand.css` + `velocity-theme.css`
+ * own that cascade (house rule: no component-level font-family, no colour
+ * overrides). This component only lays things out.
+ *
+ * CANONICAL HOME: velocity-x-components. Synced to velocity-docs via
+ * `npm run sync:brand-chrome` — don't hand-edit the copy there.
+ */
+import AuthCorner from './AuthCorner.astro';
+
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  /** Shown after "Velocity X" in the wordmark, e.g. "Components" / "Docs". */
+  productLabel: string;
+  nav: NavItem[];
+  cta: NavItem;
+  /** aidxn.com origin, passed straight through to AuthCorner. */
+  siteUrl?: string;
+}
+
+const { productLabel, nav, cta, siteUrl = 'https://aidxn.com' } = Astro.props;
+const pathname = Astro.url.pathname;
+const isActive = (href: string) => href !== '/' && pathname.startsWith(href);
+---
+
+<header
+  id="ax-header"
+  class="sticky top-0 z-[200] h-16 w-full border-b border-hairline bg-surface/85 backdrop-blur-xl sm:h-20"
+  transition:persist
+>
+  <div class="mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-6">
+    <!-- Logo -->
+    <a href="/" class="group flex shrink-0 items-center gap-2.5 no-underline">
+      <span class="brand-lockup-globe h-7 w-7 shrink-0" aria-hidden="true">
+        <svg viewBox="-500 -500 1000 1000">
+          <circle r="450"></circle>
+          <circle class="bg-equator" r="450"></circle>
+          {[165, 150, 135, 120, 105, 90, 75, 60, 45, 30, 15, 0].map((start) => (
+            <circle class="bg-meridian" r="450" style={`--start:${start}deg;--end:${start + 15}deg`}></circle>
+          ))}
+        </svg>
+      </span>
+      <span class="font-brulia text-lg tracking-tight text-ink">
+        Velocity <span class="text-primary-500">X</span>{' '}
+        <span class="font-din font-normal text-ink-muted">{productLabel}</span>
+      </span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="hidden flex-1 items-center justify-center gap-6 text-sm sm:flex" aria-label="Primary">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          aria-current={isActive(item.href) ? 'page' : undefined}
+          class="font-din text-ink-muted no-underline transition-colors hover:text-ink aria-[current=page]:font-semibold aria-[current=page]:text-ink"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Right cluster: aidxn login + CTA + mobile menu -->
+    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+      <AuthCorner siteUrl={siteUrl} />
+      <a href={cta.href} class="btn btn-primary hidden sm:inline-flex">{cta.label}</a>
+
+      <button
+        type="button"
+        id="ax-menu-toggle"
+        class="inline-flex h-9 w-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 sm:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="ax-mobile-menu"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="ax-mobile-menu" class="border-t border-hairline bg-surface sm:hidden">
+    <nav class="flex flex-col px-6 py-2" aria-label="Mobile">
+      {nav.map((item) => (
+        <a href={item.href} class="border-b border-hairline py-3 text-sm text-ink no-underline last:border-0">
+          {item.label}
+        </a>
+      ))}
+      <a href={cta.href} class="btn btn-primary my-3 justify-center">{cta.label}</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  #ax-mobile-menu {
+    display: grid;
+    grid-template-rows: 0fr;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease, visibility 0.35s;
+  }
+  #ax-mobile-menu > nav { min-height: 0; }
+  #ax-mobile-menu.is-open { grid-template-rows: 1fr; opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) {
+    #ax-mobile-menu { transition: none; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    function mountHeader() {
+      var menuBtn = document.getElementById('ax-menu-toggle');
+      var menu = document.getElementById('ax-mobile-menu');
+      if (menuBtn && menu && !menuBtn.dataset.axBound) {
+        menuBtn.dataset.axBound = 'true';
+        menuBtn.addEventListener('click', function () {
+          var open = !menu.classList.contains('is-open');
+          menu.classList.toggle('is-open', open);
+          menu.inert = !open;
+          menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+            menu.classList.remove('is-open');
+            menu.inert = true;
+            menuBtn.setAttribute('aria-expanded', 'false');
+            menuBtn.focus();
+          }
+        });
+      }
+      if (menu) menu.inert = !menu.classList.contains('is-open');
+    }
+    mountHeader();
+    // ViewTransitions replaces page content on client-side nav; the header
+    // itself is transition:persist (never remounts), but re-bind defensively
+    // in case persistence is ever dropped.
+    document.addEventListener('astro:page-load', mountHeader);
+  })();
+</script>

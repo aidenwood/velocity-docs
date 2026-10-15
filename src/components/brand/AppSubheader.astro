@@ -1,0 +1,72 @@
+---
+/**
+ * AppSubheader — the second, app-only sticky bar that docks directly
+ * underneath VelocityHeader. House rule (see this repo's CLAUDE.md, "App
+ * surfaces get a sticky sub-header"): every app surface gets this bar;
+ * marketing pages never do.
+ *
+ * Stacks without overlap by construction, not measurement: VelocityHeader is
+ * a constant h-16 / sm:h-20 (no scroll-shrink — see its header comment for
+ * why), so this bar's sticky offset is the same constant, `top-16 sm:top-20`,
+ * rather than a JS-measured CSS var. Verified at 390px and desktop — see the
+ * handover ticket for the pinchtab screenshots.
+ *
+ * CANONICAL HOME: velocity-x-components. Synced to velocity-docs via
+ * `npm run sync:brand-chrome` — don't hand-edit the copy there.
+ */
+interface Crumb {
+  label: string;
+  href: string;
+  current?: boolean;
+}
+interface SectionLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  /** Breadcrumb trail, left side. First item is implicitly "Home" at `/`. */
+  crumbs: Crumb[];
+  /** Section nav, right side — e.g. docs sections, component categories. */
+  sectionNav?: SectionLink[];
+}
+
+const { crumbs, sectionNav = [] } = Astro.props;
+const pathname = Astro.url.pathname;
+---
+
+<div
+  id="ax-app-subheader"
+  class="sticky top-16 z-[150] h-10 w-full border-b border-hairline bg-surface/95 backdrop-blur-md sm:top-20"
+  transition:persist
+>
+  <div class="mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-6 text-[12px]">
+    <nav class="flex min-w-0 items-center gap-1.5 overflow-x-auto whitespace-nowrap font-din uppercase tracking-wide text-ink-muted/70 [scrollbar-width:none]" aria-label="Breadcrumb">
+      <a href="/" class="no-underline hover:text-ink">Home</a>
+      {crumbs.map((crumb) => (
+        <>
+          <span aria-hidden="true">/</span>
+          {crumb.current ? (
+            <span aria-current="page" class="text-ink">{crumb.label}</span>
+          ) : (
+            <a href={crumb.href} class="no-underline hover:text-ink">{crumb.label}</a>
+          )}
+        </>
+      ))}
+    </nav>
+
+    {sectionNav.length > 0 && (
+      <nav class="hidden shrink-0 items-center gap-4 font-din sm:flex" aria-label="Section">
+        {sectionNav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={pathname === item.href ? 'page' : undefined}
+            class="text-ink-muted no-underline hover:text-ink aria-[current=page]:font-semibold aria-[current=page]:text-ink"
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    )}
+  </div>
+</div>

@@ -1,0 +1,81 @@
+---
+/**
+ * The aidxn login/account affordance, mounted inside VelocityHeader.
+ *
+ * Three states, swapped via `hidden` after the module script resolves
+ * `supabase.auth.getSession()`:
+ *   1. loading — a pulse placeholder (avoids a signed-out flash)
+ *   2. signed out — "Sign in" → `${SITE}/dashboard/login`
+ *   3. signed in — "Dashboard" → `${SITE}/dashboard/`
+ *
+ * Deliberately NOT a React island (no @astrojs/react in velocity-docs —
+ * see VelocityHeader.astro header comment) — a vanilla module script reads
+ * the SAME supabaseChrome client both states need, matching Header-Minimal's
+ * "Astro not React" rule for this chrome layer.
+ *
+ * `siteUrl` is a PROP, not an import from this repo's own `lib/urls.ts` —
+ * velocity-docs (the sync target) has no such file and a different lib
+ * layout, so this file must not assume one. VelocityHeader.astro passes it
+ * down; each Base.astro supplies its own site constant.
+ *
+ * CANONICAL HOME: velocity-x-components. Synced to velocity-docs via
+ * `npm run sync:brand-chrome` — don't hand-edit the copy there.
+ */
+interface Props {
+  siteUrl: string;
+}
+const { siteUrl } = Astro.props;
+const loginUrl = `${siteUrl}/dashboard/login`;
+const dashboardUrl = `${siteUrl}/dashboard/`;
+---
+
+<div id="ax-auth-corner" class="flex items-center">
+  <div id="ax-auth-loading" class="h-8 w-20 animate-pulse rounded-lg bg-ink/10" aria-hidden="true"></div>
+  <a
+    id="ax-auth-signed-out"
+    href={loginUrl}
+    class="btn btn-secondary hidden !px-3 !py-1.5 text-[13px]"
+  >
+    Sign in
+  </a>
+  <a
+    id="ax-auth-signed-in"
+    href={dashboardUrl}
+    class="btn btn-primary hidden !px-3 !py-1.5 text-[13px]"
+  >
+    Dashboard
+  </a>
+</div>
+
+<script>
+  import { supabase } from './supabaseChrome';
+
+  function reveal(id: string) {
+    const loading = document.getElementById('ax-auth-loading');
+    const out = document.getElementById('ax-auth-signed-out');
+    const inn = document.getElementById('ax-auth-signed-in');
+    loading?.classList.add('hidden');
+    out?.classList.toggle('hidden', id !== 'ax-auth-signed-out');
+    inn?.classList.toggle('hidden', id !== 'ax-auth-signed-in');
+  }
+
+  async function syncAuthCorner() {
+    try {
+      const { data } = await supabase.auth.getSession();
+      reveal(data.session ? 'ax-auth-signed-in' : 'ax-auth-signed-out');
+    } catch {
+      reveal('ax-auth-signed-out');
+    }
+  }
+
+  syncAuthCorner();
+  supabase.auth.onAuthStateChange((_event: string, session: unknown) => {
+    reveal(session ? 'ax-auth-signed-in' : 'ax-auth-signed-out');
+  });
+
+  // Astro ViewTransitions swaps the DOM on client-side nav — the corner
+  // mounted fresh needs its session check re-run (ids persist on the
+  // element itself via transition:persist, but re-run defensively in case a
+  // future change drops that attribute from the header).
+  document.addEventListener('astro:page-load', syncAuthCorner);
+</script>
