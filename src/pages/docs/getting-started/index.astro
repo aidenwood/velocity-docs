@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import CodeBlock from '../../../components/brand/CodeBlock.astro';
 import { fetchIndex } from '../../../lib/registry';
 
 const index = await fetchIndex();
@@ -24,11 +25,11 @@ const description = 'Install the velocityx CLI, add your first free component, w
         The CLI isn't on the public npm registry yet — pull it straight from source while that's
         in progress:
       </p>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`git clone https://github.com/aidenwood/velocityX-cli.git
+      <CodeBlock lang="bash" code={`git clone https://github.com/aidenwood/velocityX-cli.git
 cd velocityX-cli
 npm install
 npm run build
-npm link   # exposes \`velocityx\` globally on your machine`}</code></pre>
+npm link`} />
       <p>
         Once <code>@aidxn/velocityx-cli</code> is published, this collapses to one line:
         <code>npm install -g @aidxn/velocityx-cli</code>. See the open item at the bottom of
@@ -41,23 +42,23 @@ npm link   # exposes \`velocityx\` globally on your machine`}</code></pre>
         scale. Without the preset, a component installs fine and renders with{' '}
         <strong>no colour at all</strong> — so do this first:
       </p>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>velocityx theme</code></pre>
+      <CodeBlock lang="bash" code="velocityx theme" />
       <p>Then two one-line edits the command prints out for you:</p>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`// tailwind.config.js
+      <CodeBlock lang="js" code={`// tailwind.config.js
 module.exports = {
   presets: [require('./velocity-theme/velocity-preset.cjs')],
   content: ['./src/**/*.{astro,html,js,jsx,ts,tsx,vue,svelte}'],
-};`}</code></pre>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`/* your global stylesheet */
-@import './velocity-theme/velocity-theme.css';`}</code></pre>
+};`} />
+      <CodeBlock lang="css" code={`/* your global stylesheet */
+@import './velocity-theme/velocity-theme.css';`} />
       <p>
         Full variable list and how re-theming works: <a href="/docs/theming/">Theming →</a>
       </p>
 
       <h2>3. Browse and add a component</h2>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`velocityx list                 # everything, grouped by category
+      <CodeBlock lang="bash" code={`velocityx list                 # everything, grouped by category
 velocityx search carousel      # find by name, category or description
-velocityx add flow-lines       # writes the source into your project`}</code></pre>
+velocityx add flow-lines       # writes the source into your project`} />
       <p>
         <code>add</code> never overwrites a file you've already touched — re-run with{' '}
         <code>--force</code> if you really mean to. By default files land under{' '}
@@ -71,7 +72,7 @@ velocityx add flow-lines       # writes the source into your project`}</code></p
         ({index.subscription.currency} ${index.subscription.price}/{index.subscription.interval}) —
         it's in your receipt email.
       </p>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>velocityx login vx_live_xxxxxxxxxxxx</code></pre>
+      <CodeBlock lang="bash" code="velocityx login vx_live_xxxxxxxxxxxx" />
       <p>
         After that, <code>velocityx add</code> on a paid slug works exactly the same way — same
         command, same ownership, no feature flags in the file.

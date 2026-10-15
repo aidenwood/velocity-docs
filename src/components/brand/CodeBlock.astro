@@ -1,0 +1,98 @@
+---
+/**
+ * A real code block: monospace panel, working copy button, overflow-x-auto,
+ * minimal shell-aware token colouring (no Shiki/highlight.js dependency — the
+ * snippets this repo renders are install commands, not full source listings;
+ * see [slug].astro's leak-check comment for why source never renders here).
+ *
+ * CANONICAL HOME: lives here, in velocity-x-components. velocity-docs gets a
+ * synced copy via `npm run sync:brand-chrome` — don't hand-edit it there.
+ */
+interface Props {
+  code: string;
+  lang?: string;
+  class?: string;
+}
+const { code, lang = 'bash', class: className } = Astro.props;
+const isShell = lang === 'bash' || lang === 'sh' || lang === 'shell';
+
+// Very small shell tokenizer: `$ cmd arg --flag "string"` → spans. Only used
+// for shell-ish langs — running it over JS/CSS/JSON would mis-colour the
+// first token of every line as a "command".
+function tokenize(line: string) {
+  const parts: { text: string; cls: string }[] = [];
+  const pattern = /(^\$\s?)|(--?[\w-]+)|("[^"]*"|'[^']*')|(\S+)|(\s+)/g;
+  const matches = [...line.matchAll(pattern)];
+  let first = true;
+  for (const match of matches) {
+    const [, prompt, flag, str, word, space] = match;
+    if (prompt) parts.push({ text: prompt, cls: 'vx-tok-prompt' });
+    else if (space) parts.push({ text: space, cls: '' });
+    else if (flag) parts.push({ text: flag, cls: 'vx-tok-flag' });
+    else if (str) parts.push({ text: str, cls: 'vx-tok-str' });
+    else if (word) parts.push({ text: word, cls: first ? 'vx-tok-cmd' : 'vx-tok-arg' });
+    if (word || (first && prompt)) first = false;
+  }
+  return parts;
+}
+
+const lines = code.split('\n');
+---
+
+<div class:list={['vx-code-block not-prose', className]} data-code={code}>
+  <div class="vx-code-block__bar">
+    <span class="vx-code-block__lang">{lang}</span>
+    <button type="button" class="vx-code-block__copy" data-copy-btn aria-label="Copy to clipboard">
+      <span data-copy-label>Copy</span>
+    </button>
+  </div>
+  <pre><code>{isShell ? lines.map((line, i) => (
+    <Fragment>
+      {tokenize(line).map((part) => <span class={part.cls}>{part.text}</span>)}
+      {i < lines.length - 1 ? '\n' : ''}
+    </Fragment>
+  )) : code}</code></pre>
+</div>
+
+<script>
+  // Delegated so every .vx-code-block on a page works without per-instance JS.
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement)?.closest<HTMLButtonElement>('[data-copy-btn]');
+    if (!btn) return;
+    const block = btn.closest<HTMLElement>('.vx-code-block');
+    const code = block?.dataset.code ?? '';
+    const label = btn.querySelector('[data-copy-label]');
+    const flash = (text: string, ok: boolean) => {
+      btn.dataset.copied = ok ? 'true' : 'false';
+      if (label) label.textContent = text;
+      setTimeout(() => {
+        delete btn.dataset.copied;
+        if (label) label.textContent = 'Copy';
+      }, 1600);
+    };
+    const legacyCopy = () => {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        flash('Copied', true);
+      } catch {
+        flash('Copy failed', false);
+      } finally {
+        ta.remove();
+      }
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(code).then(
+        () => flash('Copied', true),
+        () => legacyCopy(),
+      );
+    } else {
+      legacyCopy();
+    }
+  });
+</script>

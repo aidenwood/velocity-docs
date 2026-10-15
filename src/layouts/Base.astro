@@ -5,6 +5,7 @@
  * product with two surfaces, not a second design language.
  */
 import '../styles/global.css';
+import BrandWireframeSphere from '../components/brand/BrandWireframeSphere.astro';
 
 interface Props {
   title: string;
@@ -34,6 +35,7 @@ const nav = [
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/brulia-display.woff2" crossorigin="anonymous" />
 
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
@@ -56,11 +58,21 @@ const nav = [
       Skip to content
     </a>
 
-    <header class="sticky top-0 z-40 border-b border-hairline bg-surface/90 backdrop-blur">
-      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <a href="/" class="font-semibold tracking-tight no-underline text-ink">
-          Velocity <span class="text-primary-500">X</span>
-          <span class="text-ink-muted">Docs</span>
+    <header class="sticky top-0 z-40 border-b border-hairline bg-surface/85 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
+        <a href="/" class="group flex items-center gap-2.5 no-underline">
+          <span class="brand-lockup-globe h-7 w-7 shrink-0" aria-hidden="true">
+            <svg viewBox="-500 -500 1000 1000">
+              <circle r="450"></circle>
+              <circle class="bg-equator" r="450"></circle>
+              {[165, 150, 135, 120, 105, 90, 75, 60, 45, 30, 15, 0].map((start) => (
+                <circle class="bg-meridian" r="450" style={`--start:${start}deg;--end:${start + 15}deg`}></circle>
+              ))}
+            </svg>
+          </span>
+          <span class="font-brulia text-lg tracking-tight text-ink">
+            Velocity <span class="text-primary-500">X</span> <span class="text-ink-muted font-din font-normal">Docs</span>
+          </span>
         </a>
         <nav class="hidden items-center gap-5 text-sm sm:flex">
           {nav.map((item) => (
@@ -82,7 +94,7 @@ const nav = [
           </a>
           <a
             href="https://aidxn.com/shop/velocity-x-component-library/"
-            class="rounded-lg bg-primary-600 px-3.5 py-1.5 text-sm font-semibold text-white no-underline hover:bg-primary-500"
+            class="btn btn-primary"
           >
             Subscribe
           </a>
@@ -101,8 +113,11 @@ const nav = [
       <slot />
     </main>
 
-    <footer class="mt-20 border-t border-hairline">
-      <div class="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-sm text-ink-muted sm:flex-row sm:items-center sm:justify-between">
+    <footer class="relative mt-20 overflow-hidden border-t border-hairline">
+      <div class="pointer-events-none absolute -right-10 -top-16 h-56 w-56 opacity-[0.12] sm:opacity-20">
+        <BrandWireframeSphere tone="footer" />
+      </div>
+      <div class="relative mx-auto flex max-w-6xl flex-col gap-2 px-6 py-10 text-sm text-ink-muted font-din sm:flex-row sm:items-center sm:justify-between">
         <p>
           Built by <a href="https://aidxn.com" class="text-primary-400 no-underline hover:underline">Aidxn Design</a>.
           Free components are MIT licensed.
@@ -114,5 +129,8 @@ const nav = [
         </p>
       </div>
     </footer>
+    <style is:global>
+      .font-din { font-family: var(--vx-font); }
+    </style>
   </body>
 </html>

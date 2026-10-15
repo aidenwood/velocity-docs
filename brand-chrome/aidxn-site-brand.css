@@ -1,0 +1,251 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   AIDXN SITE BRAND — the Aidxn Design chrome layer for Velocity's OWN sites.
+
+   NOT part of the sellable theme kit. `velocity-theme.css` + `velocity-preset.cjs`
+   stay a neutral slate/indigo default on purpose — that's what a subscriber's
+   `velocityx theme` pulls down, and it must never carry Aiden's personal brand.
+
+   This file is the second, Aidxn-only layer that components.aidxn.com and
+   docs.aidxn.com (velocity-docs) both load AFTER velocity-theme.css, so a
+   visitor moving between aidxn.com → components.aidxn.com → docs.aidxn.com
+   sees one continuous brand, not three different products.
+
+   CANONICAL HOME: this file lives here, in velocity-x-components. velocity-docs
+   receives a copy via `npm run sync:brand-chrome` (run from THIS repo) — never
+   hand-edit the copy in velocity-docs, it is overwritten on every sync.
+
+   Font files, the wireframe sphere and the wordmark SVGs are sourced from
+   aidxn.com itself (velocity-x-stock is READ-ONLY — never edited, only copied
+   from). Source of truth for the ramp + font stack:
+     velocity-x-stock/tailwind.config.cjs   (brandPurple / brandOrange)
+     velocity-x-stock/src/styles/main.css   (@font-face blocks)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Brand fonts, self-hosted, same files aidxn.com ships ───────────────── */
+@font-face {
+  font-family: 'Brulia';
+  font-display: swap;
+  src: url('/fonts/brulia-display.woff2') format('woff2'),
+       url('/fonts/brulia-display.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Idlewild';
+  font-display: swap;
+  font-weight: 500;
+  src: url('/fonts/Idlewild-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Idlewild';
+  font-display: swap;
+  font-weight: 700;
+  src: url('/fonts/Idlewild-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'DIN';
+  font-display: swap;
+  font-weight: 300;
+  src: url('/fonts/DINCond-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'DIN';
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/DINPro-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'DIN';
+  font-display: swap;
+  font-weight: 500;
+  src: url('/fonts/DINPro-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'DIN';
+  font-display: swap;
+  font-weight: 700;
+  src: url('/fonts/DIN-Bold.ttf') format('truetype');
+}
+
+:root {
+  /* ── Aidxn / Velocity X locked purple ramp — raw RGB channels (see the
+     ⚠️ FORMAT RULE at the top of velocity-theme.css: no #, no rgb(), or every
+     /opacity variant in the library silently breaks). Converted 1:1 from the
+     hex anchors in velocity-x-stock/tailwind.config.cjs. ───────────────────── */
+  --vx-primary-50: 251 244 255;
+  --vx-primary-100: 244 226 255;
+  --vx-primary-200: 231 197 255;
+  --vx-primary-300: 214 133 255;  /* dark-mode fonts/borders */
+  --vx-primary-400: 201 95 255;
+  --vx-primary-500: 193 71 255;
+  --vx-primary-600: 187 51 255;   /* high CTA accent */
+  --vx-primary-700: 128 0 193;    /* mid / depth */
+  --vx-primary-800: 102 3 155;
+  --vx-primary-900: 82 8 129;
+  --vx-primary-950: 66 4 112;     /* light-mode fonts/borders */
+
+  /* ── Aidxn locked orange accent — used VERY sparingly (2–3 touches/page). */
+  --vx-accent-50: 255 243 237;
+  --vx-accent-100: 255 226 211;
+  --vx-accent-200: 255 194 163;
+  --vx-accent-300: 255 154 102;
+  --vx-accent-400: 255 119 51;
+  --vx-accent-500: 255 85 0;      /* bright accent */
+  --vx-accent-600: 220 47 2;      /* deeper accent */
+  --vx-accent-700: 179 36 2;
+  --vx-accent-800: 138 29 3;
+  --vx-accent-900: 110 24 4;
+  --vx-accent-950: 63 12 2;
+
+  /* ── Surfaces: Aidxn's near-black dark shell, not the kit's navy-slate. ── */
+  --vx-surface: 255 255 255;
+  --vx-surface-raised: 251 244 255;
+  --vx-ink: 20 4 32;
+  --vx-ink-muted: 100 80 115;
+  --vx-hairline: 231 197 255;
+
+  --vx-font: 'DIN', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --vx-font-display: 'Brulia', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --vx-font-eyebrow: 'Idlewild', 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+.dark {
+  --vx-surface: 0 0 0;
+  --vx-surface-raised: 10 2 16;
+  --vx-ink: 248 250 252;
+  --vx-ink-muted: 168 140 185;
+  --vx-hairline: 66 4 112;
+}
+
+/* ── Apply the font stack site-wide. `--vx-font` on components already
+   defaults to `inherit`, so this is the one place that makes `inherit`
+   resolve to Aidxn's body face instead of the browser default. ─────────── */
+body {
+  font-family: var(--vx-font);
+}
+h1, h2, h3, .font-brulia {
+  font-family: var(--vx-font-display);
+  letter-spacing: -0.02em;
+}
+.font-eyebrow {
+  font-family: var(--vx-font-eyebrow);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* ── Header brand lockup: small wireframe globe + wordmark, same silhouette
+   as aidxn.com's Header.astro (read-only reference, ported not imported). */
+.brand-lockup-globe svg { width: 100%; height: 100%; perspective: 50px; }
+.brand-lockup-globe circle { stroke: rgb(var(--vx-primary-800)); stroke-width: 8px; fill: none; }
+.brand-lockup-globe .bg-equator { stroke: rgb(var(--vx-primary-400)); transform: rotateZ(-20deg) rotateX(125deg); }
+.brand-lockup-globe .bg-meridian {
+  animation: brand-lockup-turn 2s linear infinite;
+  transform: rotateZ(-20deg) rotateX(35deg) rotateY(var(--start));
+}
+@keyframes brand-lockup-turn { to { transform: rotateZ(-20deg) rotateX(35deg) rotateY(var(--end)); } }
+.dark .brand-lockup-globe circle { stroke: rgb(var(--vx-primary-300)); }
+.dark .brand-lockup-globe .bg-equator { stroke: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  .brand-lockup-globe .bg-meridian { animation: none; }
+}
+
+/* ── Code blocks — real monospace panel + copy button, used by CodeBlock.astro
+   across both the components site and the docs site. ───────────────────────── */
+.vx-code-block {
+  position: relative;
+  border-radius: var(--vx-radius-lg, 1rem);
+  background: color-mix(in srgb, rgb(var(--vx-ink)) 5%, transparent);
+  border: 1px solid rgb(var(--vx-hairline) / 0.6);
+  overflow: hidden;
+}
+.dark .vx-code-block {
+  background: color-mix(in srgb, black 55%, rgb(var(--vx-primary-950)) 45%);
+  border-color: rgb(var(--vx-primary-800) / 0.5);
+}
+.vx-code-block__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgb(var(--vx-hairline) / 0.5);
+}
+.dark .vx-code-block__bar { border-color: rgb(var(--vx-primary-800) / 0.4); }
+.vx-code-block__lang {
+  font-family: var(--vx-font-eyebrow);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(var(--vx-ink-muted));
+}
+.vx-code-block__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: rgb(var(--vx-primary-400));
+  background: transparent;
+  border: 1px solid rgb(var(--vx-primary-600) / 0.35);
+  border-radius: 9999px;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.vx-code-block__copy:hover {
+  background: rgb(var(--vx-primary-600) / 0.12);
+  border-color: rgb(var(--vx-primary-600) / 0.6);
+}
+.vx-code-block__copy[data-copied="true"] {
+  color: rgb(var(--vx-accent-500));
+  border-color: rgb(var(--vx-accent-500) / 0.6);
+}
+.vx-code-block pre {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  font-family: 'ui-monospace', 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  -webkit-overflow-scrolling: touch;
+}
+.vx-code-block code { font-family: inherit; }
+.vx-tok-prompt { color: rgb(var(--vx-ink-muted)); user-select: none; }
+.vx-tok-cmd { color: rgb(var(--vx-primary-400)); font-weight: 600; }
+.vx-tok-arg { color: rgb(var(--vx-ink)); }
+.vx-tok-flag { color: rgb(var(--vx-accent-400)); }
+.vx-tok-str { color: rgb(var(--vx-primary-300)); }
+
+/* ── Buttons — ported from velocity-x-stock's main.css .btn system, re-pointed
+   at this repo's --vx-primary-* raw-channel vars. ───────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  font-family: var(--vx-font);
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.8125rem;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .12s ease;
+}
+.btn:active { transform: translateY(0.5px); }
+.btn-primary { background: rgb(var(--vx-primary-600)); color: #fff; }
+.btn-primary:hover { background: rgb(var(--vx-primary-700)); }
+.dark .btn-primary { background: rgb(var(--vx-primary-400)); color: rgb(var(--vx-primary-950)); }
+.dark .btn-primary:hover { background: rgb(var(--vx-primary-300)); }
+.btn-secondary { background: transparent; color: rgb(var(--vx-primary-600)); border-color: rgb(var(--vx-primary-600)); }
+.btn-secondary:hover { background: rgb(var(--vx-primary-600)); color: #fff; }
+.dark .btn-secondary { color: rgb(var(--vx-primary-400)); border-color: rgb(var(--vx-primary-400)); }
+.dark .btn-secondary:hover { background: rgb(var(--vx-primary-400)); color: rgb(var(--vx-primary-950)); }
+
+/* ── Sidebar active state — a visible left rail + glow so the category list
+   reads as navigation, not static text (see ComponentsSidebar.astro). ────── */
+.vx-sidebar-active {
+  position: relative;
+  background: rgb(var(--vx-primary-600) / 0.12);
+  box-shadow: inset 2px 0 0 0 rgb(var(--vx-primary-500));
+}

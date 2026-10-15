@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import CodeBlock from '../../../components/brand/CodeBlock.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -25,7 +26,7 @@ const description = 'The 24 CSS variables that re-theme every Velocity component
 
     <div class="vx-prose mt-6">
       <h2>Install the preset</h2>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>velocityx theme</code></pre>
+      <CodeBlock lang="bash" code="velocityx theme" />
       <p>That writes two files and prints the two lines you need to add — a Tailwind preset and a CSS import. See <a href="/docs/getting-started/">Getting started</a> for the exact snippet.</p>
 
       <h2>⚠ The alpha-channel rule</h2>
@@ -40,13 +41,13 @@ const description = 'The 24 CSS variables that re-theme every Velocity component
       <p>Convert any hex: <code>#4F46E5</code> → <code>79 70 229</code>.</p>
 
       <h2>Your brand in about thirty seconds</h2>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>{`:root {
+      <CodeBlock lang="css" code={`:root {
   --vx-brand: custom;
   --vx-primary-600: 220 38 38;   /* #DC2626 */
   --vx-primary-700: 185 28 28;   /* #B91C1C */
   --vx-primary-300: 252 165 165; /* #FCA5A5 — dark-mode text/borders */
   --vx-radius: 0.25rem;          /* sharper corners everywhere */
-}`}</code></pre>
+}`} />
       <p>You only need the stops you actually use — 600 and 700 cover most of it; add 300 if you ship dark mode.</p>
 
       <h2>Dark mode</h2>
@@ -65,7 +66,7 @@ const description = 'The 24 CSS variables that re-theme every Velocity component
 
       <h2>The full file</h2>
       <p>This is the exact <code>velocity-theme.css</code> a real install writes, kept in sync with the live registry:</p>
-      <pre class="mt-4 max-h-[32rem] overflow-y-auto overflow-x-auto rounded-xl bg-ink/5 p-4 text-xs leading-relaxed dark:bg-black/40"><code>{css}</code></pre>
+      <CodeBlock lang="css" code={css} class="max-h-[32rem] [&_pre]:max-h-[32rem] [&_pre]:overflow-y-auto" />
     </div>
   </section>
 </Base>

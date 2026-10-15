@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import CodeBlock from '../../../components/brand/CodeBlock.astro';
 
 const title = 'CLI reference — velocityx';
 const description = 'Every velocityx command: add, list, search, theme, login and logout. Flags, defaults and examples for each.';
@@ -85,7 +86,9 @@ const commands = [
               ))}
             </dl>
           )}
-          <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>$ {c.example}</code></pre>
+          <div class="mt-4">
+            <CodeBlock lang="bash" code={`$ ${c.example}`} />
+          </div>
           {c.notes && <p class="mt-3 text-sm text-ink-muted">{c.notes}</p>}
         </div>
       ))}

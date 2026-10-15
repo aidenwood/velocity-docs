@@ -10,6 +10,7 @@
  * current source — never a second, driftable copy.
  */
 import Base from '../../../../layouts/Base.astro';
+import CodeBlock from '../../../../components/brand/CodeBlock.astro';
 import { fetchIndex, fetchComponent } from '../../../../lib/registry';
 
 export async function getStaticPaths() {
@@ -73,7 +74,7 @@ const structuredData = {
 
     <div class="vx-prose mt-8">
       <h2>Install</h2>
-      <pre class="mt-4 overflow-x-auto rounded-xl bg-ink/5 p-4 text-sm dark:bg-black/40"><code>velocityx add {component.slug}</code></pre>
+      <CodeBlock lang="bash" code={`velocityx add ${component.slug}`} />
       {!isFree && (
         <p>
           This component is on the Velocity Components subscription. Run{' '}
@@ -103,7 +104,11 @@ const structuredData = {
           {component.files.map((file) => (
             <>
               <p class="mt-6 font-mono text-xs text-ink-muted">{file.to}</p>
-              <pre class="mt-2 max-h-[36rem] overflow-y-auto overflow-x-auto rounded-xl bg-ink/5 p-4 text-xs leading-relaxed dark:bg-black/40"><code>{file.content}</code></pre>
+              <CodeBlock
+                lang={component.framework === 'react' ? 'tsx' : 'astro'}
+                code={file.content}
+                class="mt-2 [&_pre]:max-h-[36rem] [&_pre]:overflow-y-auto"
+              />
             </>
           ))}
         </>

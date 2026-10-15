@@ -1,0 +1,50 @@
+---
+/**
+ * Ported from velocity-x-stock's src/components/brand/BrandWireframeSphere.astro
+ * (read-only reference — aidxn.com, never edited, only copied from). Same
+ * markup and animation; colours adapted from the stock's `--primary-*` vars
+ * to this repo's `--vx-primary-*` raw-RGB-channel tokens.
+ *
+ * CANONICAL HOME: this file lives here, in velocity-x-components. velocity-docs
+ * receives a synced copy via `npm run sync:brand-chrome` — don't hand-edit it
+ * there.
+ */
+interface Props { id?: string; class?: string; tone?: 'hero' | 'footer'; }
+const { id, class: className, tone = 'hero' } = Astro.props;
+const meridians = Array.from({ length: 12 }, (_, index) => 165 - index * 15);
+---
+
+<div id={id} class:list={['brand-wireframe-sphere relative h-full w-full', className]} data-tone={tone} aria-hidden="true">
+  <svg viewBox="-500 -500 1000 1000" preserveAspectRatio="xMidYMin meet" class="h-full w-full">
+    <circle r="450"></circle>
+    <circle class="equator" r="450"></circle>
+    <circle class="equator-packet" r="450"></circle>
+    {meridians.map((start) => <circle class="meridian" r="450" style={`--start:${start}deg;--end:${start + 15}deg`}></circle>)}
+  </svg>
+</div>
+
+<style>
+  .brand-wireframe-sphere svg { perspective: 50px; }
+  .brand-wireframe-sphere circle { stroke: rgb(var(--vx-primary-800)); stroke-width: 8px; fill: none; }
+  .brand-wireframe-sphere .equator { stroke: rgb(var(--vx-primary-400)); transform: rotateZ(-20deg) rotateX(125deg); }
+  .brand-wireframe-sphere .equator-packet {
+    stroke: rgb(var(--vx-accent-500));
+    stroke-width: 17px;
+    stroke-linecap: round;
+    stroke-dasharray: 1 2827;
+    transform: rotateZ(-20deg) rotateX(125deg);
+    filter: drop-shadow(0 0 5px rgb(var(--vx-accent-500) / 0.6));
+    animation: brand-packet-lap 0.4s linear infinite;
+  }
+  .brand-wireframe-sphere .meridian { animation: 2s linear infinite brand-sphere-turn; transform: rotateZ(-20deg) rotateX(35deg) rotateY(var(--start)); }
+  :global(.dark) .brand-wireframe-sphere circle,
+  .brand-wireframe-sphere[data-tone='footer'] circle { stroke: rgb(var(--vx-primary-300)); }
+  :global(.dark) .brand-wireframe-sphere .equator,
+  .brand-wireframe-sphere[data-tone='footer'] .equator { stroke: #fff; }
+  @keyframes brand-packet-lap { to { stroke-dashoffset: -2828; } }
+  @keyframes brand-sphere-turn { to { transform: rotateZ(-20deg) rotateX(35deg) rotateY(var(--end)); } }
+  @media (prefers-reduced-motion: reduce) {
+    .brand-wireframe-sphere .meridian,
+    .brand-wireframe-sphere .equator-packet { animation: none; }
+  }
+</style>
