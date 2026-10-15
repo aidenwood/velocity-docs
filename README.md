@@ -1,8 +1,13 @@
 # Velocity Docs
 
-Docs site for [Velocity Components](https://github.com/aidenwood/velocity-components) and the
-[`velocityx` CLI](https://github.com/aidenwood/velocityX-cli). Astro + Tailwind, themed with the
+Docs site for Velocity Components and the `velocityx` CLI. Astro + Tailwind, themed with the
 same Velocity preset shipped to customers.
+
+Source repos are **private** — `aidenwood/velocity-x-components` (components + registry) and
+`aidenwood/velocityX-cli` (the CLI). Don't link them from any public page here; both 404 for
+anyone who isn't Aiden. The CLI is also **not published to npm** (`@aidxn/velocityx-cli` → 404,
+re-confirmed 2026-10-16), which is why `/docs/getting-started/` says so in a banner instead of
+printing an `npm install -g` line that cannot work.
 
 **Public.** This repo was previously an unused Starlight starter (last touched March 2025) —
 it's now the real docs surface for the component subscription.
@@ -14,7 +19,7 @@ it's now the real docs surface for the component subscription.
 - `/docs/components/` + `/docs/components/<slug>/` — full reference, **generated at build time
   from the live registry** (`https://aidxn.com/r`), one page per component.
 - `/docs/cli/` — every `velocityx` command.
-- `/docs/theming/` — the 24 CSS variables that re-theme the whole library.
+- `/docs/theming/` — the 42 CSS variables that re-theme the whole library.
 
 ## One source of truth — no second copy of the manifest
 
@@ -53,7 +58,7 @@ output:
 ```bash
 npm run build
 grep -rl "Pulled live from the registry" dist/docs/components/*/index.html | wc -l   # expect 40 (free)
-grep -rl "subscription gates" dist/docs/components/*/index.html | wc -l               # expect 180 (paid)
+grep -rl "subscription gates" dist/docs/components/*/index.html | wc -l               # expect 365 (paid)
 ```
 
 If those two numbers don't match the registry's free/paid split, something in

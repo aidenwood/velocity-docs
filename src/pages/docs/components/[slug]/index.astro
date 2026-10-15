@@ -31,7 +31,10 @@ const structuredData = {
   name: component.name,
   description: component.description,
   programmingLanguage: component.framework === 'react' ? 'TypeScript' : 'Astro',
-  codeRepository: 'https://github.com/aidenwood/velocity-components',
+  // No `codeRepository`: the source repos are private, so any GitHub URL here
+  // would be a 404 asserted as fact in structured data. Re-add when the free
+  // mirror is published publicly.
+  codeRepository: undefined,
   license: isFree ? 'https://opensource.org/licenses/MIT' : undefined,
 };
 ---

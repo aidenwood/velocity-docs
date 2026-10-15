@@ -12,10 +12,14 @@ const commands = [
     flags: [
       ['--dest <dir>', 'Project source root the files are written under (default src)'],
       ['--force', 'Overwrite files that already exist'],
+      [
+        '--registry-version <version>',
+        'Pin to a specific registry version. The registry only serves "latest" today, so this fails loudly unless it matches.',
+      ],
     ],
     example: 'velocityx add flow-lines expandable-card',
     notes:
-      'Writes real source files, never a package import. Skips any file you have already edited unless you pass --force. Warns (once, only when it actually wrote files) if your Tailwind config has no `primary` scale.',
+      'Writes real source files, never a package import. Skips any file that already exists unless you pass --force. Records what it wrote in velocityx.lock.json at your project root, so a later --force can tell you when you are about to overwrite edits you made since install. Warns (once, only when it actually wrote files, and only when a tailwind.config.* is present) if your Tailwind config has no `primary` scale.',
   },
   {
     cmd: 'velocityx list',
@@ -50,7 +54,8 @@ const commands = [
     summary: 'Save your Velocity Components subscription licence key on this machine.',
     flags: [],
     example: 'velocityx login vx_live_xxxxxxxxxxxx',
-    notes: 'The key is in your receipt email after subscribing. Stored at ~/.velocityx/credentials.json, mode 0600.',
+    notes:
+      'The key is in your receipt email after subscribing. It is verified against the live licence gate before it is saved, so a typo fails here rather than three commands later inside add. Stored at ~/.velocityx/credentials.json, mode 0600 — never in your project.',
   },
   {
     cmd: 'velocityx logout',
@@ -92,6 +97,23 @@ const commands = [
           {c.notes && <p class="mt-3 text-sm text-ink-muted">{c.notes}</p>}
         </div>
       ))}
+    </div>
+
+    <div class="mt-12 rounded-2xl border border-hairline p-6 text-sm">
+      <h2 class="text-base font-semibold text-ink">Commands you'll see in <code>--help</code> but shouldn't run</h2>
+      <p class="mt-2 text-ink-muted">
+        The same binary also carries Aidxn Design's internal client-provisioning tooling —{' '}
+        <code>start</code>, <code>init</code>, <code>doctor</code>, <code>content</code>,{' '}
+        <code>catalog:sync</code> and every <code>admin:*</code> command. They are not part of the
+        component library, they are not supported, and they all require a{' '}
+        <code>~/.velocityxrc.json</code> holding Supabase, GitHub, Netlify and Anthropic credentials
+        you will never have. They are listed here only because <code>velocityx --help</code> prints them.
+      </p>
+      <p class="mt-3 text-ink-muted">
+        <strong>One gotcha:</strong> running bare <code>velocityx</code> with no sub-command launches{' '}
+        <code>start</code>, the internal provisioning wizard — not a help screen. Use{' '}
+        <code>velocityx --help</code> or <code>velocityx list</code> instead.
+      </p>
     </div>
   </section>
 </Base>

@@ -45,6 +45,13 @@ module.exports = {
         primary: cssVarScale('primary', STOPS),
         accent: cssVarScale('accent', STOPS),
 
+        // Neutral ramp. 154 of the shipped component files are written against
+        // `text-secondary-*` / `bg-secondary-*` / `border-secondary-*`. This
+        // resolved on aidxn.com only because that project's own config maps
+        // `secondary: colors.neutral` — installed anywhere else, every one of
+        // those classes compiled to nothing.
+        secondary: cssVarScale('secondary', STOPS),
+
         // Semantic aliases. Use these in new components where the meaning is
         // clearer than a ramp stop — they re-theme with everything else.
         surface: 'rgb(var(--vx-surface) / <alpha-value>)',

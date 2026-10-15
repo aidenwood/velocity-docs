@@ -21,9 +21,17 @@ const description = 'Install the velocityx CLI, add your first free component, w
 
     <div class="vx-prose mt-6">
       <h2>1. Install the CLI</h2>
+      <div class="not-prose my-4 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm">
+        <p class="font-semibold text-amber-300">The CLI is not publicly installable yet.</p>
+        <p class="mt-2 text-ink-muted">
+          <code>@aidxn/velocityx-cli</code> is <strong>not published to npm</strong>, and its source
+          repository is <strong>private</strong> — so there is no install command a new customer can
+          run today. Email <a href="mailto:hi@aidxn.com" class="text-primary-400">hi@aidxn.com</a> and
+          we'll get you a build. Everything below is accurate the moment you have the binary.
+        </p>
+      </div>
       <p>
-        The CLI isn't on the public npm registry yet — pull it straight from source while that's
-        in progress:
+        If you already have access to the source repo, the install is a build-and-link:
       </p>
       <CodeBlock lang="bash" code={`git clone https://github.com/aidenwood/velocityX-cli.git
 cd velocityX-cli
@@ -31,9 +39,8 @@ npm install
 npm run build
 npm link`} />
       <p>
-        Once <code>@aidxn/velocityx-cli</code> is published, this collapses to one line:
-        <code>npm install -g @aidxn/velocityx-cli</code>. See the open item at the bottom of
-        this page.
+        Once <code>@aidxn/velocityx-cli</code> is published, that collapses to one line —{' '}
+        <code>npm install -g @aidxn/velocityx-cli</code> — and this page will say so.
       </p>
 
       <h2>2. Install the theme (once per project)</h2>

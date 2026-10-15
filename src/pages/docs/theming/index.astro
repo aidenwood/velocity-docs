@@ -10,15 +10,16 @@ import path from 'node:path';
 const css = fs.readFileSync(path.join(process.cwd(), 'theme/velocity-theme.css'), 'utf8');
 
 const title = 'Theming — Velocity Docs';
-const description = 'The 24 CSS variables that re-theme every Velocity component. Raw RGB channels, light and dark mode, and the one-line opt-out.';
+const description = 'The 42 CSS variables that re-theme every Velocity component. Raw RGB channels, light and dark mode, and the one-line opt-out.';
 ---
 
 <Base title={title} description={description}>
   <section class="mx-auto max-w-3xl px-6 pt-16 pb-20">
     <p class="text-xs font-semibold uppercase tracking-widest text-primary-400">Theming</p>
-    <h1 class="mt-3 text-3xl font-bold tracking-tight">Re-theme the whole library from 24 variables</h1>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight">Re-theme the whole library from 42 variables</h1>
     <p class="mt-4 text-ink-muted">
-      Every component is written against a <code>primary-*</code> / <code>accent-*</code> Tailwind
+      Every component is written against a <code>primary-*</code> / <code>accent-*</code> /{' '}
+      <code>secondary-*</code> Tailwind
       scale that resolves through CSS custom properties. Override the variables once, in your
       global stylesheet, and every component — buttons, cards, forms, carousels — follows. You
       never edit a component file to change colour.
@@ -49,6 +50,11 @@ const description = 'The 24 CSS variables that re-theme every Velocity component
   --vx-radius: 0.25rem;          /* sharper corners everywhere */
 }`} />
       <p>You only need the stops you actually use — 600 and 700 cover most of it; add 300 if you ship dark mode.</p>
+      <p>
+        <code>--vx-secondary-*</code> is the neutral ramp (Tailwind <code>neutral</code> by default) that
+        over a hundred components use for body text, borders and muted surfaces. Leave it alone unless
+        you want a warmer or cooler grey — but don't delete it, or those components install colourless.
+      </p>
 
       <h2>Dark mode</h2>
       <p>

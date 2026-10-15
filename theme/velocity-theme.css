@@ -59,6 +59,23 @@
   --vx-accent-900: 124 45 18;
   --vx-accent-950: 67 20 7;
 
+  /* ── Neutral ramp. 154 component files style their text, borders and muted
+     surfaces with `secondary-*`. Without these channels every one of those
+     classes compiles to nothing and the component installs colourless — the
+     exact failure the preset header warns about. Tailwind `neutral` values,
+     which is what aidxn.com already resolves them to. ─────────────────────── */
+  --vx-secondary-50: 250 250 250;
+  --vx-secondary-100: 245 245 245;
+  --vx-secondary-200: 229 229 229;
+  --vx-secondary-300: 212 212 212;
+  --vx-secondary-400: 163 163 163;
+  --vx-secondary-500: 115 115 115;
+  --vx-secondary-600: 82 82 82;
+  --vx-secondary-700: 64 64 64;
+  --vx-secondary-800: 38 38 38;
+  --vx-secondary-900: 23 23 23;
+  --vx-secondary-950: 10 10 10;
+
   /* ── Semantic surfaces. Light mode. ────────────────────────────────────── */
   --vx-surface: 255 255 255;
   --vx-surface-raised: 248 250 252;
