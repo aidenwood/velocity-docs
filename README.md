@@ -46,6 +46,15 @@ npm run build         # writes dist/, generates sitemap-index.xml
 npm run preview
 ```
 
+## Changes upstream (velocity-x-components)
+
+This repo never forks component source or props — it reads the live registry and the vendored
+theme/brand-chrome files at build time. If you're changing anything in `velocity-x-components`
+itself (a component, its props, the theme kit), run `npm run verify` there before pushing — it's
+that repo's pre-push gate (smoke render, basename check, paid-source leak check, ownership lock,
+velocity-x sync check). This repo has nothing equivalent to run; it just needs a rebuild to pick
+up whatever `verify` already confirmed is safe upstream.
+
 ## Netlify
 
 `netlify.toml` builds with `npm run build` → publishes `dist/`. Site: `docs.aidxn.com`.

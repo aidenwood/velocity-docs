@@ -1,0 +1,169 @@
+---
+/**
+ * /docs/overlays/ — the controlled/uncontrolled open-state pattern shared by
+ * every component in components/standard-overlays/ that has it. Verified
+ * against the component source in velocity-components before writing a
+ * single prop name here — don't trust this comment over the code either,
+ * re-check `components/standard-overlays/*.jsx` if a prop ever looks wrong.
+ */
+import Base from '../../../layouts/Base.astro';
+import CodeBlock from '../../../components/brand/CodeBlock.astro';
+
+const title = 'Controlled overlays — Velocity Docs';
+const description = 'The open / defaultOpen / onOpenChange pattern shared by 18 Standard Overlays components — drive a drawer, dialog or menu from your own app state, or let it manage itself.';
+
+// Name + registry slug, verified against https://aidxn.com/r/index.json —
+// the slugs do not follow a mechanical kebab-case of the file name (e.g.
+// "Popover with Arrow" -> standard-popover-arrow, not
+// standard-popover-with-arrow), so this list is copied from the live
+// registry rather than derived.
+const components = [
+  { name: 'Alert Dialog', slug: 'standard-alert-dialog' },
+  { name: 'Bottom Sheet (Snap Points)', slug: 'standard-bottom-sheet-snap-points' },
+  { name: 'Context Menu', slug: 'standard-context-menu' },
+  { name: 'Date Range Popover', slug: 'standard-date-range-popover' },
+  { name: 'Destructive Confirm Dialog', slug: 'standard-destructive-confirm-dialog' },
+  { name: 'Dropdown Action Menu', slug: 'standard-dropdown-action-menu' },
+  { name: 'Hover Card', slug: 'standard-hover-card' },
+  { name: 'Lightbox Gallery Overlay', slug: 'standard-lightbox-gallery-overlay' },
+  { name: 'Mobile Filter Sheet', slug: 'standard-mobile-filter-sheet' },
+  { name: 'Modal Dialog', slug: 'standard-modal-dialog' },
+  { name: 'Multi-Step Dialog', slug: 'standard-multi-step-dialog' },
+  { name: 'Nested Submenu Menu', slug: 'standard-nested-submenu-menu' },
+  { name: 'Popover with Arrow', slug: 'standard-popover-arrow' },
+  { name: 'Searchable Select Menu', slug: 'standard-searchable-select-menu' },
+  { name: 'Share Sheet Overlay', slug: 'standard-share-sheet-overlay' },
+  { name: 'Sheet With Tabs', slug: 'standard-sheet-with-tabs' },
+  { name: 'Slide-Over Drawer', slug: 'standard-slide-over-drawer' },
+  { name: 'Split Button Menu', slug: 'standard-split-button-menu' },
+];
+---
+
+<Base title={title} description={description}>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-20">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary-400">Standard Overlays</p>
+    <h1 class="mt-3 text-3xl font-bold tracking-tight">Controlled and uncontrolled overlays</h1>
+    <p class="mt-4 text-ink-muted">
+      Every overlay listed below accepts the same three props — <code>open</code>,{' '}
+      <code>defaultOpen</code>, <code>onOpenChange</code> — so you can drive it from your own
+      application state, or hand it off and let it manage itself. The pattern is identical across
+      all of them; learn it once here instead of re-deriving it from each component's source.
+    </p>
+
+    <div class="vx-prose mt-8">
+      <h2>The one rule</h2>
+      <p>
+        <strong>Pass <code>open</code> and you own the state. Omit it and the component owns the
+        state.</strong> There's no partial mode — a component checks whether <code>open</code> is
+        <code>undefined</code> and picks one or the other for its whole lifetime. Don't pass
+        <code>open</code> on some renders and omit it on others; pick a mode per usage site and
+        stay in it.
+      </p>
+
+      <h2>Uncontrolled (the default)</h2>
+      <p>
+        Omit <code>open</code> entirely and the overlay manages its own open/closed state
+        internally — clicking its trigger, pressing Escape, clicking the backdrop and clicking its
+        own close button all just work with zero wiring. Use <code>defaultOpen</code> to start it
+        open instead of closed.
+      </p>
+      <CodeBlock
+        lang="tsx"
+        code={`// Uncontrolled — the component manages its own state
+<ModalDialog trigger={<button>Edit profile</button>}>
+  <p>Form goes here.</p>
+</ModalDialog>
+
+// Start it open on mount, then let it manage itself from there
+<SlideOverDrawer defaultOpen trigger={<button>Filters</button>}>
+  <FilterForm />
+</SlideOverDrawer>`}
+      />
+
+      <h2>Controlled</h2>
+      <p>
+        Pass <code>open</code> and the overlay never changes its own state again — you flip it,
+        typically from a <code>useState</code> in the parent. This is what lets a drawer be
+        triggered from a row in a table, a keyboard shortcut, a deep link, or any other place that
+        isn't the overlay's own trigger element.
+      </p>
+      <CodeBlock
+        lang="tsx"
+        code={`const [open, setOpen] = useState(false);
+
+<SlideOverDrawer open={open} onOpenChange={setOpen}>
+  <EditForm onSaved={() => setOpen(false)} />
+</SlideOverDrawer>
+
+// Open it from anywhere else in the app
+<button onClick={() => setOpen(true)}>Edit from the table row</button>`}
+      />
+
+      <h2>The mistake people actually make</h2>
+      <p>
+        <code>onOpenChange</code> fires on <strong>every internally-initiated change</strong> —
+        trigger click, Escape, clicking the backdrop, clicking the overlay's own close button.
+        In controlled mode the overlay doesn't close itself for any of those; it calls{' '}
+        <code>onOpenChange(false)</code> and waits for the parent to actually flip{' '}
+        <code>open</code>. Pass <code>open</code> without handling <code>onOpenChange</code> and
+        the overlay will visibly refuse to close — Escape, backdrop, close button, all of it stop
+        working, because nothing is listening.
+      </p>
+      <CodeBlock
+        lang="tsx"
+        code={`// Wrong — open is controlled, but nothing updates it.
+// Escape / backdrop / close button all do nothing.
+<ModalDialog open={true}>...</ModalDialog>
+
+// Right — onOpenChange is wired back into the state that drives open
+<ModalDialog open={open} onOpenChange={setOpen}>...</ModalDialog>`}
+      />
+
+      <h2>ContextMenu's extra prop: <code>position</code></h2>
+      <p>
+        <code>ContextMenu</code> is the one component in this list with a prop beyond the shared
+        three. A right-click normally resolves its own coordinates from the click event — but a
+        controlled open with no coordinates is only half an API, because the menu still has to
+        render <em>somewhere</em>. Pass <code>position</code> when you're opening the menu
+        programmatically (a keyboard shortcut, an action button) rather than from a native
+        right-click, so the menu knows where to land.
+      </p>
+      <CodeBlock
+        lang="tsx"
+        code={`const [open, setOpen] = useState(false);
+const [position, setPosition] = useState({ x: 0, y: 0 });
+
+function openFromButton(e: React.MouseEvent) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  setPosition({ x: rect.left, y: rect.bottom });
+  setOpen(true);
+}
+
+<ContextMenu open={open} onOpenChange={setOpen} position={position}>
+  <MenuItem onSelect={...}>Rename</MenuItem>
+  <MenuItem onSelect={...}>Delete</MenuItem>
+</ContextMenu>`}
+      />
+      <p>
+        Omit <code>position</code> and a controlled <code>ContextMenu</code> still resolves its
+        own coordinates from whatever triggered it — the prop only matters once you're opening it
+        from somewhere that isn't a right-click.
+      </p>
+
+      <h2>Which components have it</h2>
+      <p>
+        18 of the 25 published components in Standard Overlays &amp; Menus carry this API. The
+        rest in that category — Anchored Callout Badge, Coach-Mark Tour Step, Inline Notification
+        Banner, Stacked Sheet Layers, Toast Stack, Tooltip and Undo Snackbar — don't take{' '}
+        <code>open</code>/<code>defaultOpen</code>/<code>onOpenChange</code>, mostly because
+        they're driven by a timer, a queue, or a hover delay rather than a single open/closed
+        flag. Check the component's own reference page before assuming it's controllable.
+      </p>
+      <ul>
+        {components.map((c) => (
+          <li><a href={`/docs/components/${c.slug}/`}>{c.name}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
